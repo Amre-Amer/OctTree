@@ -13,6 +13,7 @@ public class OctTreeClass {
     public CubeType cube;
     public int cntSearch;
     public GlobalClass global;
+    public GameObject go;
     public OctTreeClass(Vector3 pos0, Vector3 sca0, GlobalClass global0) {
         numData = 8;
         data = new OctTreeDataType[numData];
@@ -78,6 +79,7 @@ public class OctTreeClass {
         if (lastData < numData) {
             data[lastData] = dat;
             lastData++;
+            go.name += " |";
             result = true;
         } else {
             if (isDivided == false) {
@@ -105,6 +107,7 @@ public class OctTreeClass {
                 {
                     isInserted = octTrees[n].Insert(dat);
                     if (isInserted == true) {
+                        result = true;
                         break;
                     }
                 }
@@ -113,7 +116,8 @@ public class OctTreeClass {
         return result;
     }
     public void Show() {
-        GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        go.transform.parent = global.parentOcts.transform;
         go.transform.position = pos;
         go.transform.localScale = sca;
         MakeMaterialTransparent(go.GetComponent<Renderer>().material);

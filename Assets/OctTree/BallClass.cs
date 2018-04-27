@@ -11,14 +11,16 @@ public class BallClass
     public GlobalClass global;
     public BallClass(Vector3 pos, float rad0, Vector3 velocity0, int index0, GlobalClass global0)
     {
-        go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        go.name = "ball";
-        go.transform.position = pos;
+        global = global0;
         rad = rad0;
-        go.transform.localScale = new Vector3(rad * 2, rad * 2, rad * 2);
         velocity = velocity0;
         index = index0;
-        global = global0;
+        go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        go.name = "ball " + index; 
+        go.transform.parent = global.parentBalls.transform;
+        go.name = "ball";
+        go.transform.position = pos;
+        go.transform.localScale = new Vector3(rad * 2, rad * 2, rad * 2);
     }
     public void Move()
     {
@@ -47,19 +49,22 @@ public class BallClass
     public int IsColliding()
     {
         int result = -1;
-        for (int b = 0; b < global.balls.Length; b++)
+        if (global.ynUseOT == true)
         {
-            if (global.ynUseOT == true) {
-                float s = global.balls[b].rad * 2;
-                Vector3 sca = new Vector3(s, s, s);
-                CubeType cubeRange = new CubeType(global.balls[b].go.transform.position, sca);
-                List<OctTreeDataType> results = new List<OctTreeDataType>();
-                global.OT.FindRange(cubeRange, results);
-                if (results.Count > 0) {
-                    result = results[0].index;
-                }
+            float s = rad * 2;
+            Vector3 sca = new Vector3(s, s, s);
+            CubeType cubeRange = new CubeType(go.transform.position, sca);
+            List<OctTreeDataType> results = new List<OctTreeDataType>();
+            global.OT.FindRange(cubeRange, results);
+//            global.cntSearch++;
+            if (results.Count > 0)
+            {
+                result = results[0].index;
             }
-            else
+        }
+        else
+        {
+            for (int b = 0; b < global.balls.Length; b++)
             {
                 if (index != b)
                 {

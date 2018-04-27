@@ -25,6 +25,8 @@ public class OctTree : MonoBehaviour
     {
         global = new GlobalClass();
         global.maxXYZ = new Vector3(maxX, maxY, maxZ);
+        //global.parentOcts = new GameObject("parentOcts");
+        global.parentBalls = new GameObject("parentBalls");
         InvokeRepeating("ShowFPS", 1, 1);
     }
 
@@ -32,7 +34,7 @@ public class OctTree : MonoBehaviour
     void Update()
     {
         if (cntFrames > 0) {
-            return;
+            //return;
         }
         global.ynUseOT = ynUseOT;
         UpdateBalls();
@@ -42,13 +44,16 @@ public class OctTree : MonoBehaviour
     }
 
     void InitOT() {
+        global.cntOcts = 0;
+        if (global.parentOcts != null) DestroyImmediate(global.parentOcts);
+        global.parentOcts = new GameObject("parentOcts");
         Vector3 pos = global.maxXYZ / 2;
         Vector3 sca = global.maxXYZ;
         OT = new OctTreeClass(pos, sca, global);
         global.OT = OT;
         //
-        GameObject go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        go.transform.position = pos;
+        //GameObject go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        //go.transform.position = pos;
     }
 
     void LoadOT() {
@@ -104,5 +109,7 @@ public class GlobalClass
     public Vector3 maxXYZ;
     public BallClass[] balls;
     public int cntOcts;
+    public GameObject parentOcts;
+    public GameObject parentBalls;
 }
 
