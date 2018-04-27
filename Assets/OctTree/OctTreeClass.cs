@@ -15,19 +15,24 @@ public class OctTreeClass {
     public GlobalClass global;
     public GameObject go;
     public OctTreeClass(Vector3 pos0, Vector3 sca0, GlobalClass global0) {
-        numData = 8;
-        data = new OctTreeDataType[numData];
-        isDivided = false;
+        global = global0;
         pos = pos0;
         sca = sca0;
-        cube = new CubeType(pos0, sca);
-        global = global0;
+        isDivided = false;
+        numData = 8;
+        data = new OctTreeDataType[numData];
+        cube = new CubeType(pos, sca);
         Show();
         global.cntOcts++;
     }
     public void FindRange(CubeType cubeRange, List<OctTreeDataType>results) {
         global.cntSearch++; 
+        //if (results.Count > 0) {
+        //    return;
+        //}
+        //Debug.Log(cube.pos + " " + cube.sca + " = " + cubeRange.pos + " " + cubeRange.sca + " results:" + results.Count + " OT:" + go.name + "\n");
         if (CubesIntersect(cube, cubeRange) == false) {
+            //Debug.Log("-\n");
             return;
         }
         //global.cntSearch++; 
@@ -41,31 +46,33 @@ public class OctTreeClass {
                 octTrees[n].FindRange(cubeRange, results);
             }
         }
+//        Debug.Log("+ results:" + results.Count + " divided:" + isDivided + "\n");
     }
     public bool CubesIntersect(CubeType cube1, CubeType cube2) {
         bool yn = true; 
-        if (cube1.pos.x < cube2.pos.x - cube2.sca.x) {
+        if (cube1.pos.x + cube1.sca.x / 2 < cube2.pos.x - cube2.sca.x / 2) 
+        {
             yn = false;
         }
-        if (cube1.pos.x > cube2.pos.x + cube2.sca.x)
+        if (cube1.pos.x - cube1.sca.x / 2 > cube2.pos.x + cube2.sca.x / 2)
         {
             yn = false;
         }
         //
-        if (cube1.pos.y < cube2.pos.y - cube2.sca.y)
+        if (cube1.pos.y + cube1.sca.y / 2 < cube2.pos.y - cube2.sca.y / 2)
         {
             yn = false;
         }
-        if (cube1.pos.y > cube2.pos.y + cube2.sca.y)
+        if (cube1.pos.y - cube1.sca.y / 2 > cube2.pos.y + cube2.sca.y / 2)
         {
             yn = false;
         }
         //
-        if (cube1.pos.z < cube2.pos.z - cube2.sca.z)
+        if (cube1.pos.z + cube1.sca.z / 2 < cube2.pos.z - cube2.sca.z / 2)
         {
             yn = false;
         }
-        if (cube1.pos.z > cube2.pos.z + cube2.sca.z)
+        if (cube1.pos.z - cube1.sca.z / 2 > cube2.pos.z + cube2.sca.z / 2)
         {
             yn = false;
         }
@@ -76,7 +83,7 @@ public class OctTreeClass {
         if (cube.Contains(dat) == false) {
             return result;
         }
-        if (lastData < numData) {
+        if (lastData < global.capacityOT) {
             data[lastData] = dat;
             lastData++;
             go.name += " |";
@@ -120,6 +127,7 @@ public class OctTreeClass {
         go.transform.parent = global.parentOcts.transform;
         go.transform.position = pos;
         go.transform.localScale = sca;
+        go.name = "OT " + pos + " " + sca;
         MakeMaterialTransparent(go.GetComponent<Renderer>().material);
         go.GetComponent<Renderer>().material.color = Color.clear;
     }

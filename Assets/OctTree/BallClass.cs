@@ -24,6 +24,9 @@ public class BallClass
     }
     public void Move()
     {
+        //float mag = velocity.magnitude;
+        //go.transform.LookAt(global.targetBalls);
+        //go.transform.position += go.transform.forward * mag;
         go.transform.position += velocity;
         Vector3 normal = IsAtBorder();
         if (normal != Vector3.zero)
@@ -41,6 +44,10 @@ public class BallClass
         float mag = velocity.magnitude;
         Vector3 vector = go.transform.position - global.balls[c].go.transform.position;
         velocity = Vector3.Normalize(vector) * mag;
+        //
+        //Vector3 v = velocity;
+        //velocity = global.balls[c].velocity;
+        //global.balls[c].velocity = v;
     }
     public void TurnAroundPlane(Vector3 normal)
     {
@@ -59,7 +66,26 @@ public class BallClass
 //            global.cntSearch++;
             if (results.Count > 0)
             {
-                result = results[0].index;
+                for (int r = 0; r < results.Count; r++) {
+                    int i = results[r].index;
+                    if (i != index) {
+                        float dist = Vector3.Distance(go.transform.position, results[r].pos);
+                        float distNear = (go.transform.localScale.x + global.balls[i].go.transform.localScale.x) / 2;
+                        if (dist < distNear)
+                        {
+                            //                        Debug.Log("collide:" + dist + " < " + distNear + "\n");
+                            result = i;
+                            break;
+                        }
+                    }                    
+                }
+//                result = results[0].index;
+                global.cntResults = results.Count;
+//                Debug.Log("current index:" + index + " result index:" + result + "\n");
+                //if (result > -1)
+                //{
+                //    Debug.Log(" pos:" + global.balls[result].go.transform.position + "\n");
+                //}
             }
         }
         else
